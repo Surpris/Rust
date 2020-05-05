@@ -15,3 +15,8 @@ fn test_ndarray() {
     rex::ndarray_test::test_ndarray_permute();
     rex::ndarray_test::test_ndarray_functions();
 }
+
+#[test]
+fn test_rustfft() {
+    rex::rustfft_test::test_fft_vec();
+}

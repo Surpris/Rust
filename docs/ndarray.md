@@ -1,5 +1,9 @@
 ## ndarray 0.13.1
-For NumPy users, [the instruction provided by the ndarray crate](https://docs.rs/ndarray/0.13.1/ndarray/doc/ndarray_for_numpy_users/index.html) is very useful.
+### References
+* Docs.rs: https://docs.rs/ndarray/0.13.1/ndarray/
+    * For NumPy users, [the instruction provided by the ndarray crate](https://docs.rs/ndarray/0.13.1/ndarray/doc/ndarray_for_numpy_users/index.html) is very useful.
+* GitHub: https://github.com/rust-ndarray/ndarray
+
 
 ### generate
 * `pub fn arr1<A: Clone>()xs: &[A] -> Array1<A>`
