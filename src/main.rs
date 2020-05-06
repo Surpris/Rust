@@ -6,6 +6,7 @@
 // the root file of the crate.
 
 extern crate rust_examples;
+#[allow(unused_imports)]
 use rust_examples as rex;
 
 pub fn main() {
