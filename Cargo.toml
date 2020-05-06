@@ -8,7 +8,9 @@ edition = "2018"
 
 [dependencies]
 ndarray = "0.13.1"
+num-complex = "0.2.4"
 num-traits = "0.2.11"
 cast = "0.2.3"
 rustfft = "3.0.1"
 rulinalg = "0.4.2"
+# fftw = "0.6.0"
