@@ -19,5 +19,7 @@ fn test_ndarray() {
 #[test]
 fn test_rustfft() {
     rex::rustfft_test::test_fft_vec();
-    rex::rustfft_test::test_fft_sin();
+    rex::rustfft_test::test_fft_sin(1024);
+    rex::rustfft_test::test_fft_non_concurrency(1024, 4);
+    rex::rustfft_test::test_fft_concurrency(1024, 4);
 }
