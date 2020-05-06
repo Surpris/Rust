@@ -10,6 +10,7 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 
 use super::example_utils as eutils;
+use super::thread_test::ThreadPool;
 
 /// test to use FFTplanner
 /// This function follows an example shown in
@@ -30,7 +31,6 @@ pub fn test_fft_vec() {
 /// test to apply FFT to a sine curve
 pub fn test_fft_sin(size: usize) {
     // parameters
-    // let size: usize = 1024;
     let f0: f32 = 60_f32;
 
     // set arrays
@@ -64,9 +64,7 @@ pub fn test_fft_sin(size: usize) {
 /// https://github.com/awelkie/RustFFT/blob/master/examples/concurrency.rs
 pub fn test_fft_concurrency(size: usize, num_threads: usize) {
     // parameters
-    // let size: usize = 1024;
     let f0: f32 = 60_f32;
-    // let num_threads: usize = 4;
 
     // set arrays
     let t: Vec<f32> = eutils::xrange(0., 1., size);
@@ -121,7 +119,6 @@ pub fn test_fft_concurrency(size: usize, num_threads: usize) {
 /// This function is to be compared with concurrent one.
 pub fn test_fft_non_concurrency(size: usize, num_trial: usize) {
     // parameters
-    // let size: usize = 1024;
     let f0: f32 = 60_f32;
 
     // set arrays
@@ -145,6 +142,56 @@ pub fn test_fft_non_concurrency(size: usize, num_trial: usize) {
         // post-process
         let x_f_power: Vec<f32> = x_f.iter().map(|x_: &Complex32| eutils::power(x_)).collect();
 
+        let max_index: usize = linalg_utils::argmax(&x_f_power[index[0]..index[index.len() - 1]]).0;
+        let peak_f: f32 = freq.clone()[index[0]..index[index.len() - 1]][max_index];
+        println!("{}, {}", peak_f, f0);
+        assert!((peak_f - f0).abs() < df);
+    }
+}
+
+/// test to apply FFT in concurrency by using ThreadPool
+pub fn test_fft_threadpool(size: usize, num_threads: usize) {
+    // parameters
+    let f0: f32 = 60_f32;
+
+    // set arrays
+    let t: Vec<f32> = eutils::xrange(0., 1., size);
+    let freq: Vec<f32> = eutils::calc_freq(&t);
+    let x: Vec<Complex32> = eutils::to_complex(&eutils::sin(&t, f0));
+
+    // apply FFT using multi-threading
+    let mut planner = FFTplanner::<f32>::new(false);
+    let fft: Arc<dyn FFT<f32>> = planner.plan_fft(size);
+
+    let x_arc = Arc::new(Mutex::new(x));
+    let x_f_arc = Arc::new(Mutex::new(Vec::<Vec<Complex32>>::new()));
+
+    let pool = ThreadPool::new(num_cpus::get());
+    for _ in 0..num_threads {
+        let fft_ = fft.clone();
+        let x_ = x_arc.clone();
+        let x_f_ = x_f_arc.clone();
+        pool.execute(move || {
+            let x = x_.lock().unwrap();
+            let mut x_out: Vec<Complex32> = eutils::zeros_like(&x);
+            fft_.process(&mut x.clone(), &mut x_out);
+
+            let mut x_f_ = x_f_.lock().unwrap();
+            x_f_.push(x_out);
+        })
+    }
+
+    // post-process
+    let df: f32 = eutils::delta(&freq);
+    let index: Vec<usize> = (0..size)
+        .filter(|i| freq[*i] > df && freq[*i] < freq[freq.len() / 2])
+        .collect();
+
+    for x_f_ in x_f_arc.lock().unwrap().iter() {
+        let x_f_power: Vec<f32> = x_f_
+            .iter()
+            .map(|x_: &Complex32| eutils::power(x_))
+            .collect();
         let max_index: usize = linalg_utils::argmax(&x_f_power[index[0]..index[index.len() - 1]]).0;
         let peak_f: f32 = freq.clone()[index[0]..index[index.len() - 1]][max_index];
         println!("{}, {}", peak_f, f0);

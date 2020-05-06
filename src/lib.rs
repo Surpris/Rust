@@ -10,6 +10,7 @@ extern crate cast;
 #[macro_use(s, array)]
 extern crate ndarray;
 extern crate num_complex;
+// extern crate num_cpus;
 extern crate num_traits;
 extern crate rustfft;
 
@@ -17,3 +18,4 @@ pub mod example_utils;
 // pub mod fftw_test;
 pub mod ndarray_test;
 pub mod rustfft_test;
+pub mod thread_test;

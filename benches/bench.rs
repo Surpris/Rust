@@ -4,7 +4,7 @@ extern crate rust_examples;
 extern crate test;
 use rust_examples::rustfft_test;
 
-static SIZE: usize = 1024;
+static SIZE: usize = 1024 * 1024;
 static NUM_TRIAL: usize = 10;
 static NUM_THREADS: usize = NUM_TRIAL;
 
@@ -18,12 +18,22 @@ fn bench_fft_non_concurrency(b: &mut test::Bencher) {
     });
 }
 
-/// benchmark of rustfft in a manner of non-concurrency
+/// benchmark of rustfft in a manner of concurrency
 /// One result with (SIZE, NUM_THREADS) = (2**20, 10) is
 /// 399,389,820 ns/iter (+/- 10,070,062)
 #[bench]
 fn bench_fft_concurrency(b: &mut test::Bencher) {
     b.iter(|| {
         rustfft_test::test_fft_concurrency(SIZE, NUM_THREADS);
+    });
+}
+
+/// benchmark of rustfft in a manner of concurrency using a thread pool
+/// One result with (SIZE, NUM_THREADS) = (2**20, 10) is
+/// 446,305,330 ns/iter (+/- 40,416,183)
+#[bench]
+fn bench_fft_threadpool(b: &mut test::Bencher) {
+    b.iter(|| {
+        rustfft_test::test_fft_threadpool(SIZE, NUM_THREADS);
     });
 }
