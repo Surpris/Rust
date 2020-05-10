@@ -1,4 +1,4 @@
-//! fft_utils
+//! example_utils
 //!
 //! provide utility for other modules
 
