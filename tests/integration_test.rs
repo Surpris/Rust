@@ -24,3 +24,8 @@ fn test_rustfft() {
     rex::rustfft_test::test_fft_concurrency(1024, 4);
     rex::rustfft_test::test_fft_threadpool(1024, 4);
 }
+
+#[test]
+fn test_cpython() {
+    rex::cpython_test::hello_world();
+}
