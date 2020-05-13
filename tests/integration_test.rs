@@ -28,4 +28,5 @@ fn test_rustfft() {
 #[test]
 fn test_cpython() {
     rex::cpython_test::hello_world();
+    rex::cpython_test::hello_numpy();
 }
