@@ -30,3 +30,9 @@ fn test_cpython() {
     rex::cpython_test::hello_world();
     rex::cpython_test::hello_numpy();
 }
+
+#[test]
+fn test_fftw() {
+    rex::fftw_test::hello_fftw();
+    rex::fftw_test::test_fft_sin(1024);
+}

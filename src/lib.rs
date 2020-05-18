@@ -6,8 +6,8 @@
 // the root file of the crate.
 
 extern crate cast;
-// extern crate cpython;
-// extern crate fftw;
+extern crate cpython;
+extern crate fftw;
 #[macro_use(s, array)]
 extern crate ndarray;
 extern crate num_complex;
@@ -17,7 +17,7 @@ extern crate rustfft;
 
 pub mod cpython_test;
 pub mod example_utils;
-// pub mod fftw_test;
+pub mod fftw_test;
 pub mod ndarray_test;
 pub mod rustfft_test;
 pub mod thread_test;
